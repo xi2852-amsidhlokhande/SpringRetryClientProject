@@ -2,32 +2,35 @@ package com.amsidh.yes.mvc.service.impl;
 
 import com.amsidh.yes.mvc.model.Person;
 import com.amsidh.yes.mvc.service.RestService;
+import io.github.resilience4j.retry.annotation.Retry;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Recover;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class RestServiceImpl implements RestService {
 
-    RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
-    public RestServiceImpl() {
-
-        this.restTemplate = new RestTemplate();
+    @Override
+    public Person savePerson(Person person) {
+        return null;
     }
 
-    //@Retryable(value = RuntimeException.class)
-    @Retryable(value = {RuntimeException.class}, maxAttempts = 10, backoff = @Backoff(delay = 2000), recover = "allPersonsRecover")
+    @Override
+    public Person findPerson(Integer personId) {
+        return null;
+    }
+
+    @Retry(name = "allPerson-retry-instance")
     @Override
     public List<Person> allPersons() {
         ResponseEntity<List<Person>> exchange = restTemplate.exchange("http://localhost:8181/persons", HttpMethod.GET, null, new ParameterizedTypeReference<List<Person>>() {
@@ -35,9 +38,4 @@ public class RestServiceImpl implements RestService {
         return exchange.getBody();
     }
 
-    @Recover
-    public List<Person> allPersonsRecover(RuntimeException runtimeException) {
-        List<Person> list = new ArrayList<>();
-        return list;
-    }
 }

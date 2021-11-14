@@ -1,31 +1,44 @@
 package com.amsidh.yes.mvc;
 
-import com.amsidh.yes.mvc.service.RestService;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.retry.annotation.EnableRetry;
+
+import com.amsidh.yes.mvc.service.RestService;
+
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Data
 @RequiredArgsConstructor
 @SpringBootApplication
-@EnableRetry
+@Slf4j
 public class SpringRetryClientProjectApplication implements CommandLineRunner {
 
-	private final RestService restService;
+    private final RestService restService;
 
-	public static void main(String[] args) {
-		SpringApplication.run(SpringRetryClientProjectApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SpringRetryClientProjectApplication.class, args);
+    }
 
-	@Override
-	public void run(String... args) throws Exception {
+    @Override
+    public void run(String... args) throws Exception {
 
-		restService.allPersons().forEach(System.out::println);
+        restService.allPersons().forEach(p -> log.info(p.toString()));
 
-		//restService.service1("Amsidh1","Lokhande1");
-		//restService.service2("Amsidh2","Lokhande2");
-	}
+        /*Integer id = 1;
+        Person person = restService.findPerson(id);
+        log.info("Retrieved Person with person id " + id);
+        log.info(person.toString());
+
+        Person p = Person.builder()
+                .personName("Aditya Amsidh Lokhande")
+                .address("Pune")
+                .emailId("aditya@gmail.com")
+                .build();
+        Person savePerson = restService.savePerson(p);
+        log.info("Person Saved");
+        log.info(savePerson.toString());*/
+    }
 }
